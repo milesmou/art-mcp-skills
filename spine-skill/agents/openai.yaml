@@ -1,0 +1,8 @@
+interface:
+  display_name: "Spine 工程与动画"
+  short_description: "统一入口，按需执行 Spine 骨架装配、权重绑定、动画制作与预览导出"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "spine-mcp"
+      description: "spine-mcp：读取、编辑、验证、预览与导出 Spine 工程"

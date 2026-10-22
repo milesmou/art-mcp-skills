@@ -2,9 +2,11 @@
 
 本项目名为 `art-mcp-skills`，整合 Photoshop 素材处理、游戏 UI/Spine 部件切图与 Spine 角色动画制作。项目仓库为 `https://github.com/milesmou/art-mcp-skills`。
 
-- `spine-mcp-server/`：来自 `https://github.com/milesmou/spine-mcp-server` 的服务源码、测试及文档。安装依赖、构建和测试在此目录执行，或在根目录使用 `npm --prefix spine-mcp-server ...`。
-- `spine-skills/`：技能源码目录，每个 skill 直接放在其中，不再嵌套 `.agents/skills/`。制作动画时先阅读 [spine-skills/spine-animation/SKILL.md](spine-skills/spine-animation/SKILL.md)，再按任务读取其引用文档。
-- `photoshop-skills/`：Photoshop 技能源码目录。处理 PSD、操作图层或切图时先阅读 [photoshop-skills/photoshop-skill/SKILL.md](photoshop-skills/photoshop-skill/SKILL.md)，按任务选择通用 Photoshop、游戏 UI 切图或 Spine 部件切图模块。
+- `spine-mcp/`：来自 `https://github.com/milesmou/spine-mcp-server` 的服务源码、测试及文档。安装依赖、构建和测试在此目录执行，或在根目录使用 `npm --prefix spine-mcp ...`。
+- `spine-skill/`：名为 `spine-skill` 的统一技能，`SKILL.md` 直接位于本目录。先阅读 [spine-skill/SKILL.md](spine-skill/SKILL.md)，按任务加载工程通用、骨架绑定、动画制作或预览交付模块。
+- `photoshop-skill/`：名为 `photoshop-skill` 的统一技能，`SKILL.md` 直接位于本目录。先阅读 [photoshop-skill/SKILL.md](photoshop-skill/SKILL.md)，按任务加载通用 Photoshop、游戏 UI 切图或 Spine 部件切图模块。
+
+每个目录只维护一个技能入口，功能模块放在各自 `modules/` 中，作为按需读取的内部文档，不再嵌套同名技能目录或单独注册模块。
 
 PSD 到 Spine 动画的完整任务依次使用 Photoshop 部件切图模块与 Spine 动画技能。前者交付 PNG、坐标清单和可选初始摆位 JSON，后者负责骨骼绑定、动画编辑、验证和运行时导出；初始摆位不代表已完成绑定。
 

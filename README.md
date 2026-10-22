@@ -4,9 +4,9 @@
 
 | 模块 | 用途 |
 | --- | --- |
-| [Spine MCP Server](spine-mcp-server/README.md) | 读取、编辑、预览和导出 Spine 工程 |
-| [Spine Skills](spine-skills/README.md) | 骨架装配、权重绑定、IK、动作制作与验证 |
-| [Photoshop Skills](photoshop-skills/README.md) | Photoshop 编辑、游戏 UI 切图与 Spine 部件导出 |
+| [Spine MCP](spine-mcp/README.md) | 读取、编辑、预览和导出 Spine 工程 |
+| [Spine Skill](spine-skill/README.md) | 骨架装配、权重绑定、IK、动作制作与验证 |
+| [Photoshop Skill](photoshop-skill/README.md) | Photoshop 编辑、游戏 UI 切图与 Spine 部件导出 |
 
 从 PSD 制作角色动画时，先用 Photoshop skill 导出部件，再用 Spine skill 配合 MCP 服务完成绑定、动画和运行时资源导出。各目录的 README 提供环境要求、用法和详细文档入口。
 
