@@ -1,0 +1,34 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { configManager } = require('../dist/config-manager');
+const { rebuildDocuments, editProject, exportProjectDocuments, selectSkeleton } = require('../dist/spine/rebuild-service');
+const { withProjectLock, projectHash } = require('../dist/spine/project-lock');
+const { toolMap } = require('../dist/tools/registry');
+const { SUPPORTED_SPINE_VERSION, isSupportedSpineVersion } = require('../dist/constants');
+const cfg = configManager.load({ logLevel: 'error' });
+
+test('Real Spine CLI rebuilds multi-skeleton project, preserves FPS and edits only selected animation', { skip: !cfg.spineExe || !fs.existsSync(cfg.spineExe), timeout: 420000 }, async t => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'spine-live-rebuild-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const project = path.join(dir, '双骨架.spine');
+  const fixture = (version = SUPPORTED_SPINE_VERSION) => ({ skeleton: { spine: version, images: './images/' }, bones: [{ name: 'root' }, { name: 'head', parent: 'root', y: 10 }], animations: { idle: { bones: { head: { rotate: [{}, { time: 1, angle: 20 }] } } } } });
+  const created = await withProjectLock(project, () => rebuildDocuments(project, [{ name: '主角 name', json: fixture() }, { name: 'accessory', json: fixture(cfg.spineVersion) }], 24, null, '主角 name'));
+  assert.ok(created.verified);
+  const before = projectHash(project);
+  const result = await toolMap.spine_edit_animation.execute({ projectPath: project, skeletonName: '主角 name', animationName: 'dance', animation: { bones: { head: { rotate: [{ angle: 0 }, { time: 2, angle: -20 }, { time: 4, angle: 0 }] } } } });
+  assert.ok(result.success, result.message); assert.ok(result.data.verified); assert.ok(fs.existsSync(result.data.backupPath));
+  assert.notEqual(projectHash(project), before);
+  const { documents, fps } = await exportProjectDocuments(project, path.join(dir, 'verify'));
+  assert.equal(fps, 24); assert.equal(documents.length, 2);
+  for (const doc of documents) assert.ok(isSupportedSpineVersion(doc.json.skeleton.spine));
+  assert.deepEqual(Object.keys(selectSkeleton(documents, '主角 name').json.animations).sort(), ['dance', 'idle']);
+  assert.deepEqual(Object.keys(selectSkeleton(documents, 'accessory').json.animations), ['idle']);
+  const safe = projectHash(project);
+  await assert.rejects(editProject(project, j => { j.bones[1].parent = 'missing'; }, '主角 name'));
+  assert.equal(projectHash(project), safe);
+});

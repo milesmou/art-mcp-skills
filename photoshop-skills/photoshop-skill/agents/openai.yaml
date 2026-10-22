@@ -1,0 +1,4 @@
+interface:
+  display_name: "Photoshop 编辑与切图"
+  short_description: "统一入口，按需执行 Photoshop 编辑、游戏 UI 切图与 Spine 动画部件导出"
+  default_prompt: "使用 $photoshop-skill，根据我的任务选择通用 Photoshop、游戏 UI 切图或 Spine 部件切图模块，处理指定 PSD 并检查结果。"

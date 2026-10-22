@@ -1,0 +1,12 @@
+node_modules/
+.venv-external/
+__pycache__/
+dist/
+out/
+*.log
+.env
+.env.local
+*.bak
+.DS_Store
+docs/FINAL_SPEC.md
+docs/USER_MANUAL.html

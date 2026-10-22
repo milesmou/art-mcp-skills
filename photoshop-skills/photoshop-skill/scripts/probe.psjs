@@ -1,0 +1,8 @@
+// Read-only smoke test. The launcher supplies the harness and Photoshop modules.
+const before = app.documents.map(doc => ({ id: doc.id, name: doc.title, saved: doc.saved }));
+await reportProgress("inspect", { photoshop_version: photoshopVersion, documents: before });
+if (app.documents.length) {
+    await emit(app.activeDocument, { photoshop_version: photoshopVersion, documents: before });
+} else {
+    runExtra = { photoshop_version: photoshopVersion, documents: before };
+}

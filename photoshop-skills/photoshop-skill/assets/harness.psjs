@@ -1,0 +1,123 @@
+// Project-owned harness adapted from the original photoshop-uxp helpers.
+// run_uxp.py inserts configuration and the task body. .psjs is already modal.
+const { app, action, constants } = require("photoshop");
+const { localFileSystem: fs } = require("uxp").storage;
+const photoshopVersion = (require("uxp").host || {}).version || app.version || null;
+const runConfig = /*__RUN_CONFIG__*/;
+const startedAt = Date.now();
+const errors = [];
+let runFolder;
+let runExtra = {};
+let documentSnapshot = null;
+
+async function getRunFolder() {
+    if (!runFolder) {
+        const temporary = await fs.getTemporaryFolder();
+        runFolder = await temporary.createFolder(runConfig.run_id);
+    }
+    return runFolder;
+}
+
+async function writeArtifact(name, value) {
+    const folder = await getRunFolder();
+    const file = await folder.createFile(name, { overwrite: true });
+    await file.write(JSON.stringify(value, null, 2));
+}
+
+async function reportProgress(phase, extra = {}) {
+    await writeArtifact("progress.json", {
+        ...extra, run_id: runConfig.run_id, status: "running", phase,
+        elapsed_ms: Date.now() - startedAt,
+    });
+}
+
+async function bp(descriptors, label, { strict = true } = {}) {
+    let results;
+    try {
+        results = await action.batchPlay(descriptors, { continueOnError: !strict });
+    } catch (error) {
+        errors.push({ label, message: String(error) });
+        if (strict) throw error;
+        return [];
+    }
+    const failures = results.filter(result => result && result._obj === "error");
+    for (const failure of failures) {
+        errors.push({ label, message: failure.message, result: failure.result });
+    }
+    if (strict && failures.length) throw new Error(`${label}: ${failures[0].message}`);
+    return results;
+}
+
+async function readback(target, props, label = "readback") {
+    const [result] = await bp([{
+        _obj: "multiGet", _target: target, extendedReference: [props],
+        options: { failOnMissingProperty: false },
+    }], label);
+    return result || {};
+}
+
+function textColor(layer) {
+    try {
+        const color = layer.textItem.characterStyle.color.rgb;
+        return { red: Math.round(color.red), green: Math.round(color.green), blue: Math.round(color.blue) };
+    } catch (_) { return null; }
+}
+
+function snapshotLayer(layer) {
+    const bounds = layer.bounds;
+    const result = {
+        id: layer.id, name: layer.name, kind: String(layer.kind), visible: layer.visible,
+        opacity: layer.opacity, blendMode: String(layer.blendMode),
+        bounds: bounds && { left: bounds.left, top: bounds.top, right: bounds.right, bottom: bounds.bottom },
+    };
+    if (layer.kind === constants.LayerKind.TEXT) {
+        try { result.text = layer.textItem.contents; } catch (_) {}
+        result.textColor = textColor(layer);
+    }
+    if (layer.layers && layer.layers.length) result.children = layer.layers.map(snapshotLayer);
+    return result;
+}
+
+async function withHistory(doc, name, operation) {
+    const { executionContext } = require("uxp").script;
+    const host = executionContext.hostControl;
+    const suspension = await host.suspendHistory({ documentID: doc.id, name });
+    let commit = false;
+    try {
+        const value = await operation();
+        commit = true;
+        return value;
+    } finally {
+        await host.resumeHistory(suspension, commit);
+    }
+}
+
+async function emit(doc, extra = {}) {
+    runExtra = { ...runExtra, ...extra };
+    documentSnapshot = {
+        document: { id: doc.id, name: doc.title, width: doc.width, height: doc.height, resolution: doc.resolution },
+        layers: doc.layers.map(snapshotLayer),
+    };
+    const folder = await getRunFolder();
+    const preview = await folder.createFile("preview.jpg", { overwrite: true });
+    await doc.saveAs.jpg(preview, { quality: 9 }, true);
+}
+
+try {
+    await reportProgress("started");
+    await (async function runTask() {
+        /*__TASK_BODY__*/
+    })();
+} catch (error) {
+    errors.push({ label: "task", message: String(error), stack: error.stack || null });
+}
+
+// Write the terminal result last, after previews and task artifacts are complete.
+await writeArtifact("state.json", {
+    ...runExtra, ...(documentSnapshot || {}),
+    run_id: runConfig.run_id,
+    status: errors.length ? "failed" : "completed",
+    photoshop_version: photoshopVersion,
+    elapsed_ms: Date.now() - startedAt,
+    errors,
+});

@@ -1,0 +1,71 @@
+{
+  "name": "spine-mcp-server",
+  "version": "0.1.1",
+  "description": "Spine 3.8 MCP server with 85 tools, official atlas packing, automatic meshes and libigl weights",
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "bin": {
+    "spine-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "vendor/spine-ts/",
+    "scripts/",
+    "docs/",
+    "README.md",
+    "README.en.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "spine",
+    "spine-3.8",
+    "mcp",
+    "mcp-server",
+    "modelcontextprotocol",
+    "animation",
+    "skeleton",
+    "cocos",
+    "game-development",
+    "ai-tools"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhoushengmin/spine-mcp-server.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "setup:external": "node scripts/setup-external-tools.cjs",
+    "build": "tsc",
+    "prepack": "npm run build",
+    "test": "npm run build && node --test tests/unit-tests.mjs tests/edit-tests.mjs tests/protocol-tests.mjs tests/version-tests.mjs tests/daily-edit-tests.mjs tests/architecture-tests.mjs tests/external-tools-tests.mjs",
+    "test:external": "npm run build && node --test --test-concurrency=1 tests/external-rebuild-integration.mjs",
+    "test:rebuild": "npm run build && node --test --test-concurrency=1 tests/rebuild-integration.mjs tests/daily-rebuild-integration.mjs",
+    "start": "node dist/index.js",
+    "check": "node dist/index.js check",
+    "info": "node dist/index.js info",
+    "installer": "node scripts/installer.js",
+    "manual:html": "node scripts/gen-manual-html.js",
+    "test:unit": "node --test tests/unit-tests.mjs",
+    "test:all": "npm test && npm run test:rebuild",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "test:legacy": "node --test tests/unit-tests.mjs && node tests/self-test-tools.cjs && node tests/self-test-p4.cjs && node tests/self-test-p5.cjs && node tests/self-test-cut-assemble.cjs && node tests/self-test-generate-anim.cjs && node tests/self-test-visualize.cjs && node tests/self-test-effects.cjs && node tests/self-test-mirror-skin-wave.cjs && node tests/self-test-pipeline-plus.cjs && node tests/self-test-render.cjs && node tests/self-test-mcp.cjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "cdt2d": "^1.0.0",
+    "dotenv": "^16.0.0",
+    "sharp": "^0.33.0",
+    "zod": "^4.6.7"
+  },
+  "optionalDependencies": {
+    "canvas": "^3.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0"
+  }
+}

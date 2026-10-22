@@ -1,0 +1,35 @@
+// Exercise edits, history and PNG output only on a temporary document.
+const originalDocuments = app.documents.map(doc => doc.id);
+const doc = await app.createDocument({ width: 32, height: 24, resolution: 72, fill: "transparent" });
+try {
+    await withHistory(doc, "UXP integration smoke test", async () => {
+        await bp([{
+            _obj: "make", _target: [{ _ref: "contentLayer" }],
+            using: { _obj: "contentLayer", type: {
+                _obj: "solidColorLayer", color: { _obj: "RGBColor", red: 30, grain: 136, blue: 229 },
+            } },
+        }], "smoke fill");
+    });
+    const beforeRollback = doc.layers.map(layer => layer.id);
+    try {
+        await withHistory(doc, "UXP rollback smoke test", async () => {
+            await doc.createLayer({ name: "must_be_rolled_back" });
+            throw new Error("expected rollback");
+        });
+    } catch (error) {
+        if (String(error).indexOf("expected rollback") < 0) throw error;
+    }
+    if (JSON.stringify(doc.layers.map(layer => layer.id)) !== JSON.stringify(beforeRollback)) {
+        throw new Error("History rollback did not restore the layer set");
+    }
+    const file = await (await getRunFolder()).createFile("smoke.png", { overwrite: true });
+    await doc.saveAs.png(file, { compression: 9, interlaced: false }, true);
+    await emit(doc, { note: "Temporary document only", history_rollback_verified: true,
+        original_document_ids: originalDocuments });
+} finally {
+    await doc.closeWithoutSaving();
+}
+const remaining = app.documents.map(doc => doc.id);
+if (JSON.stringify(remaining) !== JSON.stringify(originalDocuments)) {
+    throw new Error("Temporary document cleanup changed the original open document set");
+}
