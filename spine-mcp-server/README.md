@@ -1,10 +1,12 @@
 # 🦴 Spine MCP Server
 
+[返回项目首页](../README.md) · [Spine 动画技能](../spine-skills/README.md)
+
 [![中文](https://img.shields.io/badge/lang-中文-red)](README.md) [![EN](https://img.shields.io/badge/lang-EN-blue)](README.en.md)
 
 > AI 驱动的 Spine 3.8 动画工作流服务 · 供 Trae / Cursor / Claude Desktop / Codex / Windsurf / Cline 等 AI 客户端直接调用 Spine 编辑器能力
 
-[![Node](https://img.shields.io/badge/Node-%3E%3D20-339933)](https://nodejs.org) [![Spine](https://img.shields.io/badge/Spine-3.8-yellow)](https://esotericsoftware.com) [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+[![Node](https://img.shields.io/badge/Node-%3E%3D20-339933)](https://nodejs.org) [![Spine](https://img.shields.io/badge/Spine-3.8-yellow)](https://esotericsoftware.com) ![License](https://img.shields.io/badge/License-MIT-blue)
 
 ---
 
@@ -37,9 +39,13 @@
 
 ## 🚀 快速开始
 
-```bash
+从 `art-mcp-skills` 项目根目录进入本服务目录；以下安装、构建和测试命令均在 `spine-mcp-server/` 中执行。
+
+```powershell
+cd spine-mcp-server
+
 # 1. 安装依赖 + 构建
-npm install
+npm ci
 npm run build
 
 # 2. 配置 Spine 路径（或直接运行安装向导）
@@ -50,16 +56,20 @@ node dist/index.js check
 node dist/index.js info "D:/projects/hero/hero-pro.spine"
 ```
 
+也可在本目录复制 [.env.example](.env.example) 为 `.env`，填写本机实际的 `SPINE_EXE` 路径。进程环境变量可覆盖 `.env` 中的配置。
+
 ## 🤖 配置到 AI 客户端
 
 把以下配置加入 Trae / Cursor / Claude Desktop 的 MCP 服务器配置：
+
+示例假设本项目位于 `D:/Workspace/art-mcp-skills`；将 `args` 和 `SPINE_EXE` 替换为实际绝对路径。
 
 ```json
 {
   "mcpServers": {
     "spine-mcp": {
       "command": "node",
-      "args": ["D:/cocos/spine-mcp-server/dist/index.js", "mcp"],
+      "args": ["D:/Workspace/art-mcp-skills/spine-mcp-server/dist/index.js", "mcp"],
       "env": { "SPINE_EXE": "D:/Applications/Spine/Spine.com", "SPINE_VERSION": "3.8" }
     }
   }
@@ -91,6 +101,7 @@ node dist/index.js info "D:/projects/hero/hero-pro.spine"
 ## 🧪 测试
 
 ```bash
+npm test             # 构建、单元、编辑事务与 MCP 协议测试，无需 Spine 安装
 npm run test:all     # 单元 + 编辑事务 + MCP 协议 + CLI 集成
 npm run test:unit    # 单元测试（node:test）
 ```
@@ -120,9 +131,9 @@ npm run test:unit    # 单元测试（node:test）
 └── docs/                 # 文档
 ```
 
-## 💰 购买支持
+## 来源
 
-在 [Swarms Marketplace](https://swarms.world/agent/c44211d8-0ed5-4948-8c4e-10e63f465bc3) 购买支持本项目
+导入自 [milesmou/spine-mcp-server](https://github.com/milesmou/spine-mcp-server)，对应提交 [`edf9724`](https://github.com/milesmou/spine-mcp-server/commit/edf9724d5661d00366d6b11009b955ab930a41c7)。本目录作为 `art-mcp-skills` 的普通子目录维护。
 
 ## 📄 License
 
