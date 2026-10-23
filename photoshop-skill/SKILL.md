@@ -1,6 +1,6 @@
 ---
 name: photoshop-skill
-description: "通过 UXP 操作 Photoshop，支持通用文档编辑、游戏 UI 分辨率适配与切图，以及 Spine 动画部件拆分、补图和导出。用于需要在 Photoshop 中处理 PSD、修补动画露底或导出素材的任务。"
+description: "通过 UXP 操作 Photoshop，支持通用文档编辑、游戏 UI 切图，以及 Spine 动画所需的整图或已有贴图拆件、补图和导出。用于处理 PSD、按部位拆分 PNG/JPG 或修补动画露底。"
 ---
 
 # Photoshop
@@ -15,6 +15,7 @@ description: "通过 UXP 操作 Photoshop，支持通用文档编辑、游戏 UI
 | 按游戏设计分辨率适配设计稿，切出按钮、图标、面板等 UI 资源 | [通用 Photoshop](modules/photoshop.md) + [游戏 UI 切图](modules/game-ui-slice.md) |
 | 将角色或物件 PSD 拆成 Spine 动画部件，处理表情、动作替换件与初始摆位 | [通用 Photoshop](modules/photoshop.md) + [游戏 Spine 切图](modules/game-spine-slice.md) |
 | 补齐动画关节、遮挡区或动作替换件，修复转动露底 | 上述 Spine 切图模块 + [Spine 自动补图](modules/spine-image-repair.md) |
+| 制作 Spine 动画时，将完整图片、合并图层或已有附件按部位拆件 | 通用 Photoshop + 游戏 Spine 切图 + [整图与已有贴图拆件](modules/image-part-split.md) |
 
 - 仅加载当前任务需要的模块；模块链接的 API、数据格式和案例也按需读取，不预读全部参考资料。已读模块无需重复读取。
 - 根据交付用途选择切图模块，不仅凭“PSD”“切图”或“角色”等词判断。结合用户说明和文档结构仍无法确定用途时，询问是 UI 资源还是 Spine 动画部件；等待期间可按通用模块读取源稿。
