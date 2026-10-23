@@ -76,6 +76,37 @@
 - `slot`、`attachment`、`file` 各有用途：同 slot 的手势互斥，attachment 是替换件标识，file 是相对 `images_dir` 的真实路径。文件大小写保持准确，JSON 图片 path 不带 `.png`。
 - `bone_hint`、`mesh_hint`、关节位置、缺画、依赖转换和源坐标等供后续绑定使用；生成器不会据此伪造骨骼或权重。重复资源保留一个 exported 实体，其他源节点在 coverage 引用它。
 
+## 补图记录（可选）
+
+任务包含补图时，在 v1 清单顶层追加 `repairs` 数组；不改变 `parts.status` 语义。候选尚未采用或验收未通过时，缺画项保持 `needs_redraw`；采用并通过素材检查的 PNG 才作为 `exported` 部件，动画验证单独记录。生成器忽略 `repairs`，不会据此补像素、换图或重绑。
+
+每项记录稳定 `id`、关联 `slot`/`attachment`、来源图片或层 ID（无实际源层时不伪造）、问题姿态/动画时间、补绘方式、编辑范围、候选与采用文件、坐标/绑定兼容情况及前后证据。`method` 使用 `source_restore`、`pixel_repair`、`generative_edit` 或 `replacement`；`status` 使用 `pending`、`candidate`、`accepted` 或 `failed`，表示修复流程状态，不能代替素材和动作验证结论。例如：
+
+```json
+{
+  "repairs": [
+    {
+      "id": "shoulder_l_01",
+      "slot": "upper_arm_l",
+      "attachment": "upper_arm_l",
+      "source_file": "previews/original/upper_arm_l.png",
+      "issue": {"animation": "wave", "time_seconds": 0.35, "reason": "shoulder gap"},
+      "method": "pixel_repair",
+      "status": "accepted",
+      "repair_box": [480, 720, 550, 790],
+      "candidate_file": "previews/candidates/upper_arm_l_v1.png",
+      "adopted_file": "images/upper_arm_l.png",
+      "canvas_preserved": true,
+      "binding_update_required": false,
+      "verification": {"material": "passed", "animation": "pending"},
+      "evidence": ["previews/shoulder_before.png", "previews/shoulder_after.png"]
+    }
+  ]
+}
+```
+
+`repair_box` 沿用缩放后整稿坐标系；`adopted_file` 是相对任务根目录的路径，区别于 `parts.file` 相对 `images_dir`。这里的候选与动画名称仅示例，须填实际输出和验证结果。生成式补绘另记参考图、实际提示及输出路径；轮廓、画布或绑定变化写明受影响内容。修复记录不改变原始 `coverage` 来源关系，也不把补绘像素描述成源稿已有像素。
+
 ## 生成初始摆位 JSON
 
 从仓库根目录运行（Python 3.10+，只需标准库）：

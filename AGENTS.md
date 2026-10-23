@@ -16,3 +16,23 @@ Spine 参考工程为 `D:/Workspace/XiaoGuan/art/spine/女主/mainGirl1/女主.s
 
 - 使用 `git diff` 时加上 `-w`，忽略空白差异。
 - 用户要求“提交 git”时，使用本地仓库的 Git 命令提交，并自动推送到当前所在的远程分支。
+
+## 文档维护
+
+- README 只介绍当前工程或组件的用途，并链接到具体文档；不放代理执行规则、详细操作步骤、测试命令或本机参考工程路径。
+- 协作与开发约定集中在本文件；技能执行规则放在各自 `SKILL.md` 和 `modules/`；安装与使用细节放在 `docs/` 或 `references/`。
+- Spine MCP 安装与客户端配置见 [用户手册](spine-mcp/docs/USER_MANUAL.md)，自动权重依赖见 [外部工具](spine-mcp/docs/EXTERNAL_TOOLS.md)。
+- Spine MCP 导入自 `milesmou/spine-mcp-server` 的 `edf9724d5661d00366d6b11009b955ab930a41c7` 提交；源码、工具注册、测试分别位于 `spine-mcp/src/`、`spine-mcp/src/tools/registry.ts`、`spine-mcp/tests/`。
+
+## 开发验证
+
+以下命令在项目根目录执行，按修改范围选择验证：
+
+- Spine MCP 构建：`npm --prefix spine-mcp run build`。
+- 单元、编辑事务与 MCP 协议：`npm --prefix spine-mcp test`，无需安装 Spine。
+- 真实 CLI 重建集成：`npm --prefix spine-mcp run test:rebuild`，需要可用的 Spine CLI。
+- 外部工具集成：先执行 `npm --prefix spine-mcp run setup:external`，再执行 `npm --prefix spine-mcp run test:external`。
+- 旧素材测试套件：`npm --prefix spine-mcp run test:legacy`。
+- Photoshop 启动器与初始摆位生成器：`python -m unittest discover -s photoshop-skill/scripts/tests -v`，无需启动 Photoshop 或 Spine。
+
+脚本准备模式和单元测试仅验证脚本组合与数据处理；实际编辑、切图与动画交付仍需在对应软件中执行并回读、预览检查。

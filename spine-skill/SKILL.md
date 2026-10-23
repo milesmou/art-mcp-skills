@@ -1,6 +1,6 @@
 ---
 name: spine-skill
-description: 通过 spine-mcp 统一处理 Spine 工程检查、骨架装配与绑定、角色动画制作、预览验收和导出。适用于已有 .spine 工程编辑、拆分 PNG 装配、网格权重、IK、关键帧、换图表情、FFD 及动画质量检查。按任务读取功能模块，参考 mainGirl1 女主工程的制作方法；不用于 Photoshop 切图或视频剪辑。
+description: 通过 spine-mcp 统一处理 Spine 工程检查、骨架装配与绑定、角色动画制作、预览验收和导出。适用于已有 .spine 工程编辑、拆分 PNG 装配、网格权重、IK、关键帧、换图表情、FFD，以及穿帮修复、补图协作和动作柔化。按任务读取功能模块，参考 mainGirl1 女主工程的制作方法；像素补绘交由图像编辑流程执行。
 ---
 
 # Spine
@@ -15,9 +15,11 @@ description: 通过 spine-mcp 统一处理 Spine 工程检查、骨架装配与�
 | 从拆分贴图装配骨架，修改枢轴、权重或 IK 绑定 | [工程通用](modules/project.md) + [骨架绑定](modules/rigging.md) |
 | 创建或修改动作、关键帧、表情、换图、FFD 和衣料跟随 | [工程通用](modules/project.md) + [动画制作](modules/animation.md) |
 | 评估动作质量、验收画面与循环、导出运行时资源、处理预览或恢复问题 | [工程通用](modules/project.md) + [预览交付](modules/delivery.md) |
+| 修复穿帮、关节露底或动作生硬，配合补图改善动画效果 | [工程通用](modules/project.md) + [动画制作](modules/animation.md) + [防穿帮与动作优化](modules/motion-quality.md) |
 
 - 仅加载本次任务所需模块；已读内容不重复读取。跨绑定、动画与导出的完整任务按阶段补读对应模块。
 - 每次写入都执行工程通用模块的保存与回读检查；制作或修改动画后，按预览交付模块的动画验收标准检查，按需求完成预览或运行时资源交付。
+- 动画制作包含目标姿态的缺画检查和动作自然度调整；发现像素缺失时按优化模块与 Photoshop 补图流程协作，再回到同一姿态复验。MCP 模板生成、自动权重或布料工具成功不代表画面无穿帮。
 - 编辑目标以用户指定路径为准。引用参考工程表示借鉴方法，不自动将参考工程作为编辑目标。
 - 延续女主绑定或动作时，按需读取 [mainGirl1 参考](references/main-girl.md)；该工程的骨骼名和参数不作为其他角色的默认值。
 - 具体 MCP 参数与示例见 [操作工作流](references/mcp-workflows.md)，仅查阅当前操作的相关段落。工具支持范围以当前连接的 schema 和能力查询结果为准。
