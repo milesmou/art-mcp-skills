@@ -59,6 +59,10 @@ python photoshop-skill/scripts/run_uxp.py D:/tasks/task-body.psjs --timeout 90
 
 初始摆位 JSON 还原部件位置，后续由 [Spine 动画技能](../../spine-skill/README.md) 完成骨骼绑定、约束和动作制作。交付格式见 [Spine 部件数据约定](spine/delivery.md)，参考案例见 [女主案例](spine/main-girl-example.md)。
 
+## 可选单图分层后端
+
+扁平角色图需要语义分层及遮挡补全时，可评估 [See-through 可选后端](spine/see-through.md)。该文档包含上游推理入口、环境边界、候选 PSD 复核及 Spine 衔接；本技能不内置该模型，使用前须准备外部环境。
+
 ## 来源
 
 整合自 [milesmou/photoshop-skill](https://github.com/milesmou/photoshop-skill)，对应提交 [`96e8191`](https://github.com/milesmou/photoshop-skill/commit/96e8191fcf8a9c7a96a63c27036fdb13f9c3c834)。
