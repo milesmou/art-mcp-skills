@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spine 动画导演"
+  short_description: "参考已验收 Spine 校准角色姿势和节奏，编写剧本并执行切图、补图与动画制作"
+  default_prompt: "使用 $spine-animation-director，根据我提供的 PSD 或单图与目标动画，先查看匹配的已验收 Spine 参考，校准状态姿势、幅度和节奏，给出剧本、素材蓝图和支持暂停、逐帧、慢放及时间轴的交互预演，默认不生成 GIF，验收后完成切图、补图、绑定、动画与交付。"

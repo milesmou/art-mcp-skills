@@ -137,7 +137,7 @@ variant_path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
 sequence 的 n 帧取样为 `duration*i/n`，不含精确终点。循环另外检查 `0`、`duration-ε`、`duration`；注意渲染器可能在 duration 时自动循环，原始端点和非循环播放也需检查。`spine_render_preview` 单帧的 `frameIndex/fps` 默认换算与工程 FPS 查询不是同一条路径，优先显式 `time`。
 
-静态序列看姿势与层次，连续播放看速度、滞后、接缝；需要时用 `spine_export_video` 导出 GIF，或 `spine_export_sheet` 生成精灵表与元数据。MP4/WebM 需要服务端 ffmpeg。
+静态序列看姿势与层次，连续播放看速度、滞后、接缝。默认使用 [交互播放器](../../spine-animation-director/modules/interactive-preview.md)，从当前原始绘制/运行时渲染直接准备无损 PNG 帧或用 `spine_export_sheet` 生成分帧图集与元数据；已有动画也可直接用真实 runtime 播放。不要为预览调用默认输出 GIF 的 `spine_export_video`；仅用户明确要求 GIF 时传 `format="gif"`，按需 MP4/WebM 需要服务端 ffmpeg。
 
 修改后运行 `spine_validate_references` 并回读。运行时交付再调用 `spine_export_animation(format="json"|"binary")`，确认目标运行时支持同系列数据版本；atlas 的每个 page 名必须与图片实际文件匹配。贴图或 region 发生变化时重新打包，单改骨骼动画不需要无条件重打包。
 
