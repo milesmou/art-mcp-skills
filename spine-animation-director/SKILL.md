@@ -28,7 +28,7 @@ idle 先区分常驻循环、情绪状态与偶发小动作。用户只说 idle 
 | 选择参考、确定待机类型、校准姿势与幅度 | [参考选择与动作校准](modules/reference-calibration.md) | 只读使用 Spine 工程通用及预览能力；缓存先核对源版本 |
 | 看图、写动作剧本、确定制作规范 | [动作导演与剧本](modules/direction.md) | PSD 读取使用 [Photoshop 入口](../photoshop-skill/SKILL.md)；已有工程只读使用 [Spine 工程通用](../spine-skill/modules/project.md) |
 | 按目标姿势决定怎么切、哪里补 | [切图与补图蓝图](modules/asset-blueprint.md) | 按输入选择 Photoshop 的 Spine 切图、整图拆件或补图模块 |
-| 构建/检查交互播放器 | [交互预览](modules/interactive-preview.md) | HTML/Canvas 无损帧播放器；已有工程只读预览或成品按需使用 Spine runtime |
+| 构建/检查交互播放器 | [交互预览](modules/interactive-preview.md) | 关节代理的连接、枢轴与遮挡；HTML/Canvas 播放器；已有工程或成品按需使用 Spine runtime |
 | 效果预演、正式制作、修复与交付 | [执行与验收](modules/production.md) | [Spine 入口](../spine-skill/SKILL.md)，制作时补读相应模块 |
 
 首次规划依次读取参考校准、动作导演、素材蓝图；进入制作再读执行模块。缺少某执行技能时仍可完成剧本和蓝图，实际执行只使用已经存在的能力，不把计划说成完成。技能依赖优先定位同一仓库中的相邻目录；安装版则定位同一技能根下的对应技能，链接失效时按技能名发现实际位置。安装与示例见 [使用说明](references/getting-started.md)。
@@ -52,7 +52,7 @@ idle 先区分常驻循环、情绪状态与偶发小动作。用户只说 idle 
 
 - `animation_brief.md`：参考卡（工程/版本/动作、所看片段、采用与不采用项）、待机类型或动作语义、主姿势、幅度/节奏对照、时间轴、规范及已确认范围。
 - `asset_plan.md`：部件划分、切线/枢轴图、补图与替换件清单、对应姿势和验证结果。
-- `images/`、`spine_manifest.json`、工作 PSD：沿用 Photoshop 现有交付约定，生成内容与原始像素分开追溯。规划表不冒充实际清单，不编造图层 ID。
+- 部件 PNG、`spine_manifest.json`、工作 PSD：沿用 Photoshop 现有交付约定，生成内容与原始像素分开追溯。完整动画交付时，PNG 放在与 `.spine` 同级的 `images/` 文件夹中，遵循 [工程目录规范](../spine-skill/modules/delivery.md#工程目录规范)。规划表不冒充实际清单，不编造图层 ID。
 - `.spine`、成品预览、按需导出的运行时数据与图集；`acceptance.md` 记录脚本姿势/时间到最新预览、问题及检查结论的对应关系。
 
 不另造与 `spine_manifest.json` 冲突的坐标格式或脚本生成器。初始摆位 JSON 仅是导入素材，完整角色图加整体变形也不算完成拆件或正式角色动画。

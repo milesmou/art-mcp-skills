@@ -7,7 +7,7 @@
 1. 确定实际目标、动作含义、时长、循环与否及交付需求。可从现有工程和用户上下文推断的信息直接采用，并说明重要假设。
 2. 发现会话中的 `spine-mcp` 工具，通常显示为 `mcp__spine_mcp__spine_*`。以下使用短名。缺少连接时检查现有配置和服务错误，报告具体缺项；不要把编写 JSON 当作已保存 `.spine`。
 3. 先调用 `spine_get_capabilities({projectPath})`，再用 `spine_check_project` 体检。需要层级时读取 `spine_describe` / `spine_get_project_info`，再按需查询动画、附件和网格。当前实测支持 3.8，其他系列以能力结果为准，不通过改版本字符串绕过限制。
-4. 一次导出 JSON 到工作目录，分析和预览复用该快照；写入后重新导出。检查 `skeleton.images`、实际 `images/`、atlas 页面名称及图片路径。JSON 移到其他目录后，相对图片路径不会自动指向原资源。
+4. 一次导出 JSON 到工作目录，分析和预览复用该快照，写入后重新导出。检查 `skeleton.images`、实际图片目录、atlas 页面名称及图片路径。JSON 移到其他目录后，相对图片路径不会自动指向原资源。最终交付遵循 [工程目录规范](delivery.md#工程目录规范)。
 5. 从父子关系、插槽绑定、网格权重和线框预览确认控制对象。自动角色匹配只是线索；参考女主只有 `root` 自动匹配，不能直接套用整骨架模板。
 
 导出分析可使用 [inspect_spine_json.py](../scripts/inspect_spine_json.py)，只读 Spine 3.8.x JSON。工具参数与快照示例见 [操作工作流](../references/mcp-workflows.md) 的“读取与快照”。
