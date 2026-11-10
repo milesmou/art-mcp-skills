@@ -6,7 +6,7 @@
 
 1. 明确目标文档：用户给路径就按路径打开或复用相同文档；指向当前文档时先检查是否存在，不自动新建。多个候选时根据路径和 ID 确定目标。
 2. 编写任务脚本正文。启动器会将其插入 [harness.psjs](../assets/harness.psjs)，正文可以直接使用 `app`、`action`、`constants`、`fs`、`bp`、`readback`、`emit`、`withHistory`、`getRunFolder` 和 `reportProgress`。不要重复粘贴整个 harness。
-3. 使用 [run_uxp.py](../scripts/run_uxp.py) 生成并启动 `.psjs`，等待与本次 `run_id` 匹配的最终状态。具体命令见 [脚本运行](../references/running-scripts.md)。
+3. 使用 [run_uxp.py](../scripts/run_uxp.py) 生成并启动 `.psjs`。启动器默认为目标版本配置 `WarnRunningScripts 0`，已符合时直接执行；仅实际修改且 Photoshop 正在运行时提示保存后重启。等待与本次 `run_id` 匹配的最终状态，具体命令和首次配置的处理见 [脚本运行](../references/running-scripts.md)。
 4. 阅读 `state.json` 并查看 `preview.jpg` 或实际导出 PNG；仅有 `errors: []` 不能证明画面正确。有视觉差异时只修正相关部分。
 
 ## UXP 执行约定

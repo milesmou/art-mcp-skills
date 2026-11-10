@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import codecs
 import json
 import os
 from pathlib import Path
@@ -52,21 +53,22 @@ def find_result(run_id: str, roots: list[Path]) -> tuple[Path, dict] | None:
     return None
 
 
+def running_windows_photoshop() -> list[Path]:
+    command = ("[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new(); "
+               "@(Get-Process Photoshop -ErrorAction SilentlyContinue | "
+               "Select-Object -ExpandProperty Path -Unique) | ConvertTo-Json -Compress")
+    result = subprocess.run(["powershell.exe", "-NoProfile", "-Command", command],
+                            capture_output=True, text=True, encoding="utf-8",
+                            creationflags=subprocess.CREATE_NO_WINDOW, check=True)
+    paths = json.loads(result.stdout) if result.stdout.strip() else []
+    if isinstance(paths, str):
+        paths = [paths]
+    return list(dict.fromkeys(Path(path) for path in paths if path))
+
+
 def discover_photoshop() -> Path:
     if sys.platform == "win32":
-        command = ("[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new(); "
-                   "@(Get-Process Photoshop -ErrorAction SilentlyContinue | "
-                   "Select-Object -ExpandProperty Path -Unique) | ConvertTo-Json -Compress")
-        result = subprocess.run(["powershell.exe", "-NoProfile", "-Command", command],
-                                capture_output=True, text=True, encoding="utf-8",
-                                creationflags=subprocess.CREATE_NO_WINDOW, check=False)
-        try:
-            paths = json.loads(result.stdout) if result.stdout.strip() else []
-        except ValueError:
-            paths = []
-        if isinstance(paths, str):
-            paths = [paths]
-        paths = list(dict.fromkeys(Path(path) for path in paths if path))
+        paths = running_windows_photoshop()
         if len(paths) > 1:
             raise RuntimeError("Multiple Photoshop installations are running; use --photoshop.")
         if paths and paths[0].is_file():
@@ -79,6 +81,69 @@ def discover_photoshop() -> Path:
         if len(applications) == 1:
             return applications[0]
         raise RuntimeError("Specify the running Photoshop application with --photoshop.")
+    raise RuntimeError("This launcher supports Windows and macOS Photoshop.")
+
+
+def photoshop_settings_dir(photoshop: Path) -> Path:
+    product = photoshop.stem if sys.platform == "darwin" else photoshop.parent.name
+    if not product.startswith("Adobe Photoshop"):
+        raise RuntimeError("Cannot identify Photoshop settings from its installation name; "
+                           "use --settings-dir to specify the target version's settings folder.")
+    if sys.platform == "win32":
+        appdata = os.environ.get("APPDATA")
+        if not appdata:
+            raise RuntimeError("APPDATA is unavailable; specify --settings-dir.")
+        return Path(appdata) / "Adobe" / product / f"{product} Settings"
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Preferences" / f"{product} Settings"
+    raise RuntimeError("This launcher supports Windows and macOS Photoshop.")
+
+
+def disable_script_warning(settings_dir: Path) -> bool:
+    config = settings_dir / "PSUserConfig.txt"
+    original = config.read_bytes() if config.exists() else b""
+    bom, encoding = b"", "utf-8"
+    for marker, codec in ((codecs.BOM_UTF8, "utf-8"),
+                          (codecs.BOM_UTF16_LE, "utf-16-le"),
+                          (codecs.BOM_UTF16_BE, "utf-16-be")):
+        if original.startswith(marker):
+            bom, encoding = marker, codec
+            break
+    text = original[len(bom):].decode(encoding, errors="surrogateescape")
+    directive = re.compile(r"(?m)^([ \t]*WarnRunningScripts[ \t]+)\S+")
+    if directive.search(text):
+        updated = directive.sub(r"\g<1>0", text)
+    else:
+        newline = "\r\n" if "\r\n" in text else "\n"
+        separator = newline if text and not text.endswith(("\r", "\n")) else ""
+        updated = text + separator + "WarnRunningScripts 0" + newline
+    content = bom + updated.encode(encoding, errors="surrogateescape")
+    if content == original:
+        return False
+    settings_dir.mkdir(parents=True, exist_ok=True)
+    backup = config.with_suffix(".txt.bak")
+    if config.exists() and not backup.exists():
+        shutil.copy2(config, backup)
+    stream = tempfile.NamedTemporaryFile(dir=settings_dir, prefix="PSUserConfig-",
+                                         suffix=".tmp", delete=False)
+    temporary = Path(stream.name)
+    try:
+        with stream:
+            stream.write(content)
+        temporary.replace(config)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return True
+
+
+def photoshop_is_running(photoshop: Path) -> bool:
+    if sys.platform == "win32":
+        return photoshop in running_windows_photoshop()
+    if sys.platform == "darwin":
+        result = subprocess.run(["/bin/ps", "-axo", "comm="], capture_output=True,
+                                text=True, check=True)
+        prefix = str(photoshop / "Contents" / "MacOS") + "/"
+        return any(line.strip().startswith(prefix) for line in result.stdout.splitlines())
     raise RuntimeError("This launcher supports Windows and macOS Photoshop.")
 
 
@@ -164,6 +229,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", nargs="?", type=Path, help="UTF-8 task body with top-level await")
     parser.add_argument("--photoshop", type=Path, help="Running Photoshop executable or macOS .app")
+    parser.add_argument("--settings-dir", type=Path,
+                        help="Photoshop settings folder when its installation has been renamed")
+    parser.add_argument("--keep-script-warning", action="store_true",
+                        help="Keep the current JavaScript warning configuration")
     parser.add_argument("--run-dir", type=Path, help="New or empty local run directory")
     parser.add_argument("--search-root", action="append", type=Path,
                         help="Additional UXP storage root to search")
@@ -201,6 +270,17 @@ def main(argv: list[str] | None = None) -> int:
             raise RuntimeError(f"Photoshop not found: {photoshop}")
         acquire_lock(metadata)
         try:
+            if not args.keep_script_warning:
+                settings = (args.settings_dir.resolve() if args.settings_dir
+                            else photoshop_settings_dir(photoshop))
+                changed = disable_script_warning(settings)
+                metadata["script_warning"] = {"config_path": str(settings / "PSUserConfig.txt"),
+                                              "changed": changed}
+                write_json(run_dir / "run.json", metadata)
+                if changed and photoshop_is_running(photoshop):
+                    print("WarnRunningScripts 0 was configured. Restart Photoshop after saving "
+                          "your documents to apply it. This session may still show the script "
+                          "confirmation dialog.", file=sys.stderr)
             launch(photoshop, script)
         except Exception:
             clear_lock(run_id)

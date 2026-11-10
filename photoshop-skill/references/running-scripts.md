@@ -22,6 +22,25 @@ python photoshop-skill/scripts/run_uxp.py D:/tasks/task-body.psjs --photoshop "C
 
 年份只用于最后一条显式路径示例，自动发现没有固定版本。macOS 的 `--photoshop` 值为 `.app` 路径。Windows 将生成的 `.psjs` 作为文件参数发给 Photoshop；macOS 使用 `open -a`。二者都以实际写出的结果文件确认完成，不把启动命令返回当作任务成功。
 
+## 默认自动运行 JavaScript
+
+启动器在实际启动任务前，为目标 Photoshop 版本的 `PSUserConfig.txt` 设置 `WarnRunningScripts 0`，关闭“您即将载入 JavaScript 文件”的确认提示。
+
+- Windows 配置目录为 `%APPDATA%/Adobe/<Photoshop 安装目录名>/<Photoshop 安装目录名> Settings/`。
+- macOS 配置目录为 `~/Library/Preferences/<Photoshop 应用名，不含 .app> Settings/`。
+- 已有有效配置为 `0` 时直接执行，保留配置文件内容与修改时间，且不提示重启。
+- 需要更改时，保留其他配置、注释、编码和换行，并将所有同名有效配置改为 `0`。首次修改已有文件时备份为 `PSUserConfig.txt.bak`，之后保留该备份。
+- 仅本次实际修改且目标 Photoshop 正在运行时，启动器向标准错误输出一次重启提示，再发出本次脚本。当前会话可能仍有确认弹窗，可确认本次生成的任务脚本后继续。待用户保存后重启 Photoshop，新配置在下次启动时生效。已有未保存文档时保留当前会话。
+- `--prepare-only` 和 `--collect` 分别执行脚本准备和结果收集，配置步骤只在实际启动新任务时执行。
+
+安装目录或应用被重命名时，用 `--settings-dir` 指定目标版本的设置目录。用户明确要求保留原有确认方式时，使用 `--keep-script-warning` 跳过该配置步骤。
+
+```powershell
+python photoshop-skill/scripts/run_uxp.py D:/tasks/task-body.psjs --photoshop "D:/Apps/PS/Photoshop.exe" --settings-dir "C:/Users/<用户名>/AppData/Roaming/Adobe/Adobe Photoshop 2023/Adobe Photoshop 2023 Settings"
+```
+
+配置文件位置与重启后生效的行为参见 [Adobe 官方配置说明](https://helpx.adobe.com/photoshop/desktop/app-integrations/extension-descriptions-and-compatibility.html)。
+
 ## 编写任务正文
 
 正文直接使用 harness 已提供的模块和函数，可以使用顶层 `await` 或 `return`。例如：
