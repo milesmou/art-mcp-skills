@@ -143,4 +143,13 @@ sequence 的 n 帧取样为 `duration*i/n`，不含精确终点。循环另外�
 
 失败时先读取具体错误、原文件是否保留、备份路径和源文件是否被外部改变。`spine_rollback({projectPath})` 只列备份；传 `backupId` 才执行恢复。备份保留数量有限，恢复前确认不会丢掉后续有效修改；不要将回滚作为盲目重试步骤。
 
+## 运行时诊断脚本
+
+适用于自行编写接点误差、网格翻折或循环端点检查的任务。
+
+- 先核对实际加载 SDK 的附件对象和 API。仓库附带的 Spine 3.8 runtime 可用 `attachment instanceof spine.MeshAttachment`、`attachment instanceof spine.RegionAttachment` 分类，实例需来自同一份 runtime。其附件实例没有可供此用途读取的 `.type` 字段，按该字段筛选可能漏掉全部网格。
+- 报告受检名称、网格及三角形数、接触采样数、采样时刻和最差结果，并核对它们覆盖本次目标。预期对象存在而受检数为零时先修检测逻辑，空集合的零误差或零翻折记为待验证。
+- 已有故障版时，使用相同测量定义检查故障版与修复版，确认检查能定位原问题。接点比较使用源图中同一语义接合位置，按实际 region 变换或网格三角插值求世界坐标。
+- 生成权重时检查实际写出精度下的有效影响数，裁除量化为零或编辑器确实会舍弃的极小影响后重新归一化。依据目标版本的保存回读差异选择精度与阈值，再复验 setup 和动画中的世界位置。
+
 本页参数依据项目根目录下 `spine-mcp/` 0.1.1 的工具 schema、`spine-mcp/docs/HEADLESS_EDITING.md`、`spine-mcp/docs/DAILY_OPERATIONS.md` 与预览源码核对。升级后以实际连接工具返回为准。
