@@ -12,7 +12,7 @@
 
 `spine_import.json` 不是 `.spine` 工程，也不含绑定和动画。用户只要求图片时可以不生成。参考工程不复制进交付物；更新既有资产的差异报告放任务根目录。
 
-上述目录用于独立切图交付。任务继续制作完整 Spine 工程时，默认将 `.spine` 保存到任务根目录，与 `images/` 文件夹同级，遵循 [工程目录规范](../../../spine-skill/modules/delivery.md#工程目录规范)。`images_dir` 填图片文件夹相对清单的路径，上述布局为 `images`；工程图片路径使用 `./images/`。布局变化时同步换算补绘记录的 `adopted_file` 等路径。已知最终工程目录时可直接导出到其同级的 `images/` 文件夹。
+上述目录用于独立切图交付。任务继续制作完整 Spine 工程时，按 [工程目录规范](../../../spine-skill/modules/delivery.md#工程目录规范) 整理，根目录中的文件仅保留 `.spine` 与工作 `.psd`，部件放 `images/`、文档放 `docs/`、预览放 `previews/`，清单、初始摆位 JSON 与验证报告放 `metadata/`。`metadata/spine_manifest.json` 的 `images_dir` 为 `../images`，工作 PSD 路径为 `../<name>.psd`，补绘记录的 `adopted_file` 等路径按清单的新位置换算。工程图片路径使用 `./images/`，位于 `metadata/` 的初始摆位 JSON 使用相对于该 JSON 的图片目录。已知最终工程目录时可直接导出到其同级的 `images/` 文件夹。
 
 ## 清单 v1
 

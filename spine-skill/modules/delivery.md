@@ -91,20 +91,48 @@
 
 ### 工程目录规范
 
-导出的可编辑 `.spine` 工程与 `images/` 文件夹同级，工程依赖的全部部件 PNG 放在 `images/` 中。工程的图片路径设置为相对路径 `./images/`，附件纹理路径相对于该图片目录。交付或搬迁时保留工程与图片目录的相对关系，整个目录复制到其他位置后应能直接打开。
+交付根目录中的文件仅保留可编辑 `.spine` 工程与工作 `.psd`。其余产物按用途放入子目录，按任务实际交付内容创建。用户明确指定的布局优先。
+
+| 子目录 | 内容 |
+| --- | --- |
+| `images/` | 工程依赖的全部部件 PNG |
+| `previews/` | 播放器、预览帧、拆件联系表、重建图、蓝图和修复对照图 |
+| `runtime/` | 运行时 JSON、SKEL、atlas 及其页面图片 |
+| `docs/` | 动作说明、素材计划、验收记录等 Markdown 文档 |
+| `metadata/` | `spine_manifest.json`、初始摆位 JSON、绑定记录、验证报告和文件校验索引 |
+
+`.spine` 工程与 `images/` 文件夹同级，工程图片路径设置为 `./images/`，附件纹理路径相对于该图片目录。交付或搬迁时保留工程与图片目录的相对关系，整个目录复制到其他位置后应能直接打开。
 
 Spine 3.8.99 保存时会将 `images/` 规范化为 `./images/`。为避免 JSON 重建的严格回读比较误报，输入工程图片路径时直接使用 `./images/`，并核对保存后的实际值。
 
 ```text
 exports/<task>/
   character.spine
+  character_parts.psd
   images/
     stem.png
     leaf.png
-  spine_manifest.json
+  previews/
+    index.html
+  runtime/
+    character.json
+    character.skel
+    atlas/
+      character.atlas
+      character.png
+  docs/
+    animation_brief.md
+    asset_plan.md
+    acceptance.md
+  metadata/
+    spine_manifest.json
+    verification.json
+    files.sha256.json
 ```
 
-完整制作从拆件阶段规划最终工程目录，部件可直接导出到工程同级的 `images/` 文件夹。已有其他素材布局且本次需要整理交付时，将工程实际依赖的部件整理到该文件夹，同步更新 `spine_manifest.json` 的 `images_dir`、补绘文件路径及相关导入 JSON。上例中清单的 `images_dir` 为 `images`。用户明确指定其他布局时按其要求执行；只读参考工程保持原样，已有工程的局部编辑不额外迁移无关资源。
+完整制作从拆件阶段规划最终工程目录，部件可直接导出到工程同级的 `images/` 文件夹。上例 `metadata/spine_manifest.json` 中的 `images_dir` 为 `../images`，`source_psd` 为 `../character_parts.psd`，采用补图的路径为 `../images/<part>.png`，预览证据路径为 `../previews/<file>`。运行记录和备份保留在工作项目 `.work/` 的任务目录。
+
+整理已有交付目录时，按引用所在文件的新位置重算相对路径。清单中的部件 `file` 仍相对于 `images_dir`，其他补图和证据路径沿用其各自约定。`docs/` 文档引用清单时使用 `../metadata/`，引用预览时使用 `../previews/`。若校验索引位于 `metadata/files.sha256.json`，其 `file` 字段相对于该索引目录，整理后重新计算文件列表、大小与哈希。完成后检查根目录文件类型，并验证清单、文档链接、预览资源和校验索引均能定位到实际产物。
 
 迁移图片后保存工程并重新导出回读，逐项确认附件对应的 PNG 在工程同级的 `images/` 中存在、名称与大小写匹配、图片内容完整。核对骨架、附件和动画数据，导入导出造成曲线表达变化时比较实际采样姿态与关键帧行为。单纯修改 JSON 中的图片路径或复制文件不能代替工程保存和回读验证。
 

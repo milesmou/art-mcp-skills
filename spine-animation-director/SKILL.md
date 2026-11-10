@@ -50,10 +50,12 @@ idle 先区分常驻循环、情绪状态与偶发小动作。用户只说 idle 
 
 默认将正式产物放在工作项目根目录 `exports/<task>/`，临时分析与制作前预演数据放 `.work/<task>/`；用户指定目录优先。安装技能的目录不是输出项目根目录。
 
-- `animation_brief.md`：参考卡（工程/版本/动作、所看片段、采用与不采用项）、待机类型或动作语义、主姿势、幅度/节奏对照、时间轴、规范及已确认范围。
-- `asset_plan.md`：部件划分、切线/枢轴图、补图与替换件清单、对应姿势和验证结果。
-- 部件 PNG、`spine_manifest.json`、工作 PSD：沿用 Photoshop 现有交付约定，生成内容与原始像素分开追溯。完整动画交付时，PNG 放在与 `.spine` 同级的 `images/` 文件夹中，遵循 [工程目录规范](../spine-skill/modules/delivery.md#工程目录规范)。规划表不冒充实际清单，不编造图层 ID。
-- `.spine`、成品预览、按需导出的运行时数据与图集；`acceptance.md` 记录脚本姿势/时间到最新预览、问题及检查结论的对应关系。
+完整动画交付根目录中的文件仅保留 `.spine` 与工作 `.psd`，其他正式产物按 [Spine 工程目录规范](../spine-skill/modules/delivery.md#工程目录规范) 归入子目录。
+
+- `docs/animation_brief.md`：参考卡（工程/版本/动作、所看片段、采用与不采用项）、待机类型或动作语义、主姿势、幅度/节奏对照、时间轴、规范及已确认范围。
+- `docs/asset_plan.md`：部件划分、切线/枢轴图、补图与替换件清单、对应姿势和验证结果。
+- `images/` 中的部件 PNG、`metadata/spine_manifest.json`、根目录工作 PSD：沿用 Photoshop 的素材与坐标约定，生成内容与原始像素分开追溯。清单中的图片目录相对于清单位置设置为 `../images`，工程图片目录使用 `./images/`。规划表不冒充实际清单，不编造图层 ID。
+- 根目录 `.spine`、`previews/` 中的成品预览、`runtime/` 中按需导出的运行时数据与图集；`docs/acceptance.md` 记录脚本姿势/时间到最新预览、问题及检查结论的对应关系，验证报告和文件校验索引放在 `metadata/`。
 
 不另造与 `spine_manifest.json` 冲突的坐标格式或脚本生成器。初始摆位 JSON 仅是导入素材，完整角色图加整体变形也不算完成拆件或正式角色动画。
 
