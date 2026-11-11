@@ -7,7 +7,7 @@ description: "通过 UXP 操作 Photoshop，支持通用文档编辑、游戏 UI
 
 这是 Photoshop 功能的统一技能入口。根据用户目标读取下列模块；模块是内部参考文档，不是需要单独调用或安装的技能。
 
-从 PSD/单图到完整 Spine 动画的任务，先使用 [Spine 动画导演](../spine-animation-director/SKILL.md) 明确动作剧本、规范和素材蓝图；本技能按其已确认的姿势范围切图补图，完成后回交 Spine 制作。已有蓝图时直接执行，不重复规划；仅要求 Photoshop 编辑或切图时按原任务范围处理。
+从 PSD/单图到完整 Spine 动画的任务，先使用 [Spine 动画导演](../spine-animation-director/SKILL.md) 明确动作剧本、规范和素材蓝图；本技能可先在工作副本准备最终效果预览所需的临时拆件、补图与替换件；效果帧经用户验收后，复用其中已采用的素材交给 Spine 复刻。已有蓝图时直接执行，不重复规划；仅要求 Photoshop 编辑或切图时按原任务范围处理。
 
 ## 按任务读取
 
