@@ -5,11 +5,11 @@
 - `spine-mcp/`：来自 `https://github.com/milesmou/spine-mcp-server` 的服务源码、测试及文档。安装依赖、构建和测试在此目录执行，或在根目录使用 `npm --prefix spine-mcp ...`。
 - `spine-skill/`：名为 `spine-skill` 的统一技能，`SKILL.md` 直接位于本目录。先阅读 [spine-skill/SKILL.md](spine-skill/SKILL.md)，按任务加载工程通用、骨架绑定、动画制作或预览交付模块。
 - `photoshop-skill/`：名为 `photoshop-skill` 的统一技能，`SKILL.md` 直接位于本目录。先阅读 [photoshop-skill/SKILL.md](photoshop-skill/SKILL.md)，按任务加载通用 Photoshop、游戏 UI 切图或 Spine 部件切图模块。
-- `spine-animation-director/`：名为 `spine-animation-director` 的动作导演技能。根据 PSD/单图和动画需求编写动作剧本、制作规范与切图补图蓝图，再统筹 Photoshop 与 Spine 执行完整制作；先阅读 [技能入口](spine-animation-director/SKILL.md)。
+- `spine-animation-director/`：名为 `spine-animation-director` 的动作导演技能。根据视频、图片或 PSD 先制作完整效果预览，用户验收后统筹 Photoshop 与 Spine 制作同效果动画；先阅读 [技能入口](spine-animation-director/SKILL.md)。
 
 每个目录只维护一个技能入口，功能模块放在各自 `modules/` 中，作为按需读取的内部文档，不再嵌套同名技能目录或单独注册模块。
 
-PSD/单图到 Spine 动画的完整任务由动作导演技能先确定剧本、规范和素材蓝图，直接制作当前角色完整的最终效果帧（可先在工作副本准备临时切图、补图与替换件），用户验收后冻结帧与素材，再使用 Spine 技能按该效果复刻并逐帧对照。Photoshop 交付 PNG、坐标清单和可选初始摆位 JSON，Spine 负责骨骼绑定、动画编辑、验证和运行时导出；初始摆位不代表已完成绑定。只要求切图或已有工程局部编辑时直接使用对应技能，不强制扩展为完整制作。
+视频、图片或 PSD 到 Spine 动画的完整任务由动作导演技能统筹：视频直接复刻原片姿势、时序及局部动作，图片 / PSD 先确定动作设计与素材蓝图；先制作当前角色完整的最终效果预览（可在工作副本准备切图、补图与替换件）。用户验收后冻结帧、素材、时间及生成依据，再使用 Spine 技能按该效果制作，以保存后实际运行时逐帧对照。Photoshop 交付 PNG、坐标清单和可选初始摆位 JSON，Spine 负责绑定、动画、验证和导出；初始摆位不代表已完成绑定。只要求切图或已有工程局部编辑时直接使用对应技能，不强制扩展为完整制作。
 
 导出快照及临时验证产物放在根目录 `.work/`；Photoshop 素材交付默认按其技能约定放在根目录 `exports/` 的任务目录，两者均已忽略。修改文档路径时使用相对工程根目录的路径，使项目根目录改名或搬迁后仍能使用。
 

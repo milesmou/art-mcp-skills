@@ -1,4 +1,4 @@
 interface:
   display_name: "Spine 动画导演"
-  short_description: "参考已验收 Spine 校准角色姿势和节奏，编写剧本并执行切图、补图与动画制作"
-  default_prompt: "使用 $spine-animation-director，根据我提供的 PSD 或单图与目标动画，先查看原画及适用参考，直接生成完整最终效果预览（GIF、帧动画或交互播放），验收后冻结画面与素材，再用 Spine 按同帧效果复刻并检查局部形状、接合和遮挡。"
+  short_description: "根据视频、图片或 PSD 先给完整效果预览，验收后制作同效果 Spine 并逐帧核对"
+  default_prompt: "使用 $spine-animation-director，根据我提供的视频、图片或 PSD 先制作完整效果预览（视频直接复刻），经我验收后冻结帧、素材和时间轴，再制作与预览一致的 Spine 动画并用保存后的实际运行时逐帧对照。"
