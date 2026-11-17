@@ -112,7 +112,7 @@ variant_path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 - `spine_assemble` 使用索引 `{"parts":{"part-N":{"name":"部件名","parent":"父级名","x":0,"y":0,"pivotX":0,"pivotY":0,"order":0}}}`；索引坐标、单位和父级关系按当前服务返回格式及 schema 核对，示例中的零不代表实际安装位置。
 - 独立 PNG 目录用 `spine_build_skeleton(partsDir,outputJsonPath,...)`；当前工具没有 `partsIndexPath` 参数，而是自动读取 `partsDir/partsIndex.json`，格式为 `{"PNG文件名不含扩展名":{"bone":"骨骼名","x":0,"y":0}}`。这个格式不同于 `spine_assemble` 的索引；生成骨骼默认都挂在 root 下，还需整理父子关系。完全重叠的完整人物立绘不能靠连通域切出被遮挡肢体；缺少拆件时明确所缺素材。
 - 先验证 setup 拼接外形、关节枢轴、draw order、缩放和图片路径，再建立网格/权重、约束和动作。空工程从 `spine_create_project` 起步。`spine_pipeline` 仅在输入符合要求且需要预设动作全流程时采用。
-- atlas 优先官方 `spine_pack_atlas`，输出目录必须不存在或为空。运行时数据、图集及其全部页面图片按 [工程目录规范](../modules/delivery.md#工程目录规范) 直接交付到 `out/`；已有目录非空时的临时打包与更新也按该规范执行。按目标运行时核对 PMA、旋转、裁边和多页设置，不把默认打包参数视为项目约定。
+- atlas 优先官方 `spine_pack_atlas`，输出目录必须不存在或为空。运行时数据、图集及其全部页面图片按 [工程目录规范](../modules/delivery.md#工程目录规范) 直接交付到 `out/`；已有目录非空时的临时打包与更新也按该规范执行。默认显式传 `settings: { premultiplyAlpha: true }`，对应编辑器勾选“预乘 Alpha”，并核对实际图集与运行时混合设置匹配；仅在用户明确要求时覆盖。旋转、裁边和多页设置按目标运行时需求核对。
 
 ## 预览、导出与恢复
 
